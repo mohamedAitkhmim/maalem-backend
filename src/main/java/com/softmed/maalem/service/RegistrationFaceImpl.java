@@ -7,6 +7,7 @@ import com.softmed.maalem.persistence.entity.Profile;
 import com.softmed.maalem.persistence.repository.ProfileRepository;
 import com.softmed.maalem.persistence.repository.UserRepository;
 import com.softmed.maalem.presentation.dto.RegistrationDto;
+import com.softmed.maalem.utils.UtilsFace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,11 @@ public class RegistrationFaceImpl implements RegistrationFace {
     @Autowired
     private ProfileMapper profileMapper;
 
+    @Autowired
+    private UtilsFace utils;
+
     @Override
-    public Boolean register(RegistrationDto registrationDto) {
+    public User register(RegistrationDto registrationDto) {
 
         //verification d'email
         if ( userRepository.existsByEmail(registrationDto.getEmail()) )
@@ -54,6 +58,23 @@ public class RegistrationFaceImpl implements RegistrationFace {
         profile.setDateInscription(new Date());
         user.setProfile(profile);
         user = userRepository.save(user);
-        return null;
+        utils.sendActivationMail(user);
+        return user;
+    }
+
+    @Override
+    public void renvoyerActivationCode(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("Invalide email"));
+        utils.sendActivationMail(user);
+    }
+
+    @Override
+    public Boolean activerCompte(String id, String code) {
+        User user = userRepository.findById(id).orElseThrow(()->new RuntimeException("Invalide!!!"));
+        if (user.getActivationCode().equals(code)){
+            user.setAccountStatus(true);
+            return true;
+        }
+        return false ;
     }
 }

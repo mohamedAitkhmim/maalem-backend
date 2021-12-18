@@ -4,9 +4,11 @@ import com.softmed.maalem.presentation.dto.AuthResponse;
 import com.softmed.maalem.presentation.dto.LoginRequest;
 import com.softmed.maalem.presentation.dto.RegistrationDto;
 import com.softmed.maalem.security.TokenProvider;
+import com.softmed.maalem.service.RegistrationFace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,9 @@ public class AuthentificationController {
     @Autowired
     private TokenProvider tokenProvider;
 
+    @Autowired
+    private RegistrationFace registrationService;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         System.out.println(loginRequest.toString());
@@ -46,8 +51,22 @@ public class AuthentificationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegistrationDto registration) {
+        registrationService.register(registration);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Registration validée");
+    }
 
-        return ResponseEntity.ok("");
+    @PostMapping("/resendActivation")
+    public ResponseEntity<?> resendActivation(@RequestBody String email) {
+        registrationService.renvoyerActivationCode(email);
+        return ResponseEntity.status(HttpStatus.CREATED).body("effecuée");
+    }
+
+    @PostMapping("/activer/{id}")
+    @ResponseBody
+    public String activerCompte(@RequestBody String code,@PathVariable String id) {
+        if (registrationService.activerCompte(id,code))
+            return "Compte bien activé";
+        else return "Donnée invalide. vérifier vos données";
     }
 
     /*@PostMapping("/admin/login")
