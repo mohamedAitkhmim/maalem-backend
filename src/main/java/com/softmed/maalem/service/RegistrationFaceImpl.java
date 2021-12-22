@@ -1,9 +1,12 @@
 package com.softmed.maalem.service;
 
+import com.softmed.maalem.exception.BadRequestException;
 import com.softmed.maalem.mapper.ProfileMapper;
+import com.softmed.maalem.persistence.entity.Client;
 import com.softmed.maalem.persistence.entity.Role;
 import com.softmed.maalem.persistence.entity.User;
 import com.softmed.maalem.persistence.entity.Profile;
+import com.softmed.maalem.persistence.repository.ClientRepository;
 import com.softmed.maalem.persistence.repository.ProfileRepository;
 import com.softmed.maalem.persistence.repository.UserRepository;
 import com.softmed.maalem.presentation.dto.RegistrationDto;
@@ -35,31 +38,34 @@ public class RegistrationFaceImpl implements RegistrationFace {
     @Autowired
     private UtilsFace utils;
 
+    //@Autowired
+    //private ClientRepository clientRepository;
+
     @Override
-    public User register(RegistrationDto registrationDto) {
+    public Client register(RegistrationDto registrationDto) {
 
         //verification d'email
         if ( userRepository.existsByEmail(registrationDto.getEmail()) )
-            throw new RuntimeException("email deja existe");
+            throw new BadRequestException("email deja existe");
 
         //verification du cnie
         if ( profileRepository.existsByCnie(registrationDto.getCnie()) )
-            throw new RuntimeException("cnie deja existe");
+            throw new BadRequestException("cnie deja existe");
 
         //save new user
-        User user = new User();
-        user.setId(UUID.randomUUID().toString());
-        user.setEmail(registrationDto.getEmail());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
-        user.setAccountStatus(false);
-        user.setRole(Role.CLIENT);
-        user.setActivationCode(UUID.randomUUID().toString());
+        Client client = new Client();
+        client.setId(UUID.randomUUID().toString());
+        client.setEmail(registrationDto.getEmail());
+        client.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        client.setAccountStatus(false);
+        client.setRole(Role.CLIENT);
+        client.setActivationCode(UUID.randomUUID().toString());
         Profile profile = profileMapper.dtoToProfile(registrationDto);
         profile.setDateInscription(new Date());
-        user.setProfile(profile);
-        user = userRepository.save(user);
-        utils.sendActivationMail(user);
-        return user;
+        client.setProfile(profile);
+        client = userRepository.save(client);
+        //utils.sendActivationMail(client);
+        return client;
     }
 
     @Override

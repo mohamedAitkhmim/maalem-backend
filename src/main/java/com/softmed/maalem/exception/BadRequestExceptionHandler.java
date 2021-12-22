@@ -1,2 +1,23 @@
-package com.softmed.maalem.exception;public class BadRequestExceptionHandler {
+package com.softmed.maalem.exception;
+
+import com.softmed.maalem.presentation.dto.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.servlet.http.HttpServletRequest;
+
+@RestControllerAdvice
+public class BadRequestExceptionHandler extends ResponseEntityExceptionHandler
+ {
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({BadRequestException.class})
+    public ResponseEntity<Object> badRequest(HttpServletRequest req, Exception exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+                body(new ApiResponse(false,exception.getMessage()));
+    }
 }

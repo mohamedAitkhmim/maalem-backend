@@ -1,5 +1,6 @@
 package com.softmed.maalem.presentation.controller;
 
+import com.softmed.maalem.presentation.dto.ApiResponse;
 import com.softmed.maalem.presentation.dto.AuthResponse;
 import com.softmed.maalem.presentation.dto.LoginRequest;
 import com.softmed.maalem.presentation.dto.RegistrationDto;
@@ -52,7 +53,7 @@ public class AuthentificationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegistrationDto registration) {
         registrationService.register(registration);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Registration validée");
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true,"Registration validée"));
     }
 
     @PostMapping("/resendActivation")

@@ -31,7 +31,7 @@ public class Profile {
 
     private String photo;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private User user;
+    //@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    //private User user;
 
 }

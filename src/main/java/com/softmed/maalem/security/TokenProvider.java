@@ -40,7 +40,8 @@ public class TokenProvider {
                 .setExpiration(expiryDate)
                 .claim("roles", userPrincipal.getAuthorities())
                 .claim("email", userPrincipal.getUsername())
-                //.claim("fullname", u.getNom() + " "+u.getPrenom())
+                .claim("accountStatus", u.getAccountStatus())
+                .claim("name", u.getProfile().getNom().toUpperCase() + " "+u.getProfile().getPrenom())
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
     }
