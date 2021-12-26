@@ -9,8 +9,11 @@ import com.softmed.maalem.persistence.entity.Profile;
 import com.softmed.maalem.persistence.repository.ClientRepository;
 import com.softmed.maalem.persistence.repository.ProfileRepository;
 import com.softmed.maalem.persistence.repository.UserRepository;
+import com.softmed.maalem.presentation.dto.PasswordResetDto;
 import com.softmed.maalem.presentation.dto.RegistrationDto;
+import com.softmed.maalem.security.UserPrincipal;
 import com.softmed.maalem.utils.UtilsFace;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@Slf4j
 public class RegistrationFaceImpl implements RegistrationFace {
 
     @Autowired
@@ -65,22 +69,35 @@ public class RegistrationFaceImpl implements RegistrationFace {
         client.setProfile(profile);
         client = userRepository.save(client);
         //utils.sendActivationMail(client);
+        log.info("new client");
         return client;
     }
 
     @Override
     public void renvoyerActivationCode(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("Invalide email"));
+        User user = userRepository.findByEmail(email).orElseThrow(()->new BadRequestException("Invalide email"));
         utils.sendActivationMail(user);
     }
 
     @Override
     public Boolean activerCompte(String id, String code) {
-        User user = userRepository.findById(id).orElseThrow(()->new RuntimeException("Invalide!!!"));
+        User user = userRepository.findById(id).orElseThrow(()->new BadRequestException("Invalide"));
         if (user.getActivationCode().equals(code)){
             user.setAccountStatus(true);
             return true;
         }
         return false ;
+    }
+
+    @Override
+    public Boolean resetPassword(PasswordResetDto dto, UserPrincipal userPrincipal) {
+        if ( !passwordEncoder.matches(dto.getCurrentPassword(),userPrincipal.getPassword()) )
+            throw new BadRequestException("Mot de passe actuelle est invalide.");
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(()->new BadRequestException("Invalide"));
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+        log.info("password updated");
+        return true;
     }
 }
