@@ -11,8 +11,6 @@ import java.util.Date;
 @Data @ToString
 public class ProfileDto {
 
-    private String userId;
-
     private String email;
 
     @NotBlank
@@ -40,4 +38,8 @@ public class ProfileDto {
     private String ville;
 
     private String adresse;
+
+    private String photo;
+
+    private String background;
 }

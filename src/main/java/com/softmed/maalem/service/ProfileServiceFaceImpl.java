@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -42,7 +44,6 @@ public class ProfileServiceFaceImpl implements ProfileServiceFace {
         User user = userRepository.findById(userPrincipal.getId()).orElseThrow(()->new BadRequestException("User introuvable"));
         ProfileDto profileDto = profileMapper.profileToDto(user.getProfile());
         profileDto.setEmail(user.getEmail());
-        profileDto.setUserId(user.getId());
         return profileDto;
     }
 
@@ -66,10 +67,33 @@ public class ProfileServiceFaceImpl implements ProfileServiceFace {
 
         switch (type){
             case "PROFILE":{
-                user.getProfile().setPhoto(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename());
-                image.transferTo(Paths.get(profileImagesFolder+user.getProfile().getPhoto()));
+                String path = profileImagesFolder+"/profile/"+user.getProfile().getPhoto();
+                //delete old image
+                user.getProfile().setPhoto(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename()));
+                image.transferTo(Paths.get(profileImagesFolder+"/profile/"+user.getProfile().getPhoto()));
+                profileRepository.save(user.getProfile());
+                if(new File(path).delete())
+                    log.info("Image deleted successfully");
+                else
+                    log.error("Failed to delete the image");
+                break;
+            }
+            case "BACKGROUND":{
+                //delete old image
+                user.getProfile().setPhoto(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename()));
+                image.transferTo(Paths.get(profileImagesFolder+"/background/"+user.getProfile().getPhoto()));
+                profileRepository.save(user.getProfile());
                 break;
             }
         }
+    }
+
+    @Override
+    public byte[] getProfileImage(String img,String type) throws IOException {
+        if ("PROFILE".equals(type))
+            return Files.readAllBytes(Paths.get(profileImagesFolder+"/profile/"+img));
+        else if ("BACKGROUND".equals(type))
+            return Files.readAllBytes(Paths.get(profileImagesFolder+"/background/"+img));
+        else throw new BadRequestException("error");
     }
 }

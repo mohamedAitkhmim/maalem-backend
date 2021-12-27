@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -24,9 +25,6 @@ public class AccountController {
 
     @Autowired
     private ProfileServiceFace profileService;
-
-    @Autowired
-    private UtilsFace utils;
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetDto dto,@CurrentUser UserPrincipal userPrincipal) {
@@ -45,16 +43,9 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(profileService.saveUserProfile(dto,userPrincipal));
     }
 
-    @GetMapping(value = "/image-profile",produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] getProfileImage(@CurrentUser UserPrincipal userPrincipal) throws IOException {
-        return utils.getProfileImage(userPrincipal);
-    }
-
-    @PostMapping("/saveImage")
-    public ResponseEntity<ApiResponse> saveImageProfile(@Valid @ModelAttribute PhotoDto dto) {
-        System.err.println(dto.getId());
-        System.err.println(dto.getType());
-        utils.saveProfileImage(dto);
+    @PostMapping("/saveImage/{type}")
+    public ResponseEntity<ApiResponse> saveImageProfile(@ModelAttribute MultipartFile image,@PathVariable String type,@CurrentUser UserPrincipal userPrincipal) throws IOException {
+        profileService.saveProfileImage(image,type,userPrincipal);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true,"image saved"));
     }
 

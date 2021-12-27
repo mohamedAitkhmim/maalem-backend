@@ -19,7 +19,7 @@ public class BadRequestExceptionHandler extends ResponseEntityExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<Object> badRequest(HttpServletRequest req, Exception exception) {
-        log.error(exception.getMessage());
+        log.error(exception.getLocalizedMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).
                 body(new ApiResponse(false,exception.getMessage()));
     }
@@ -27,7 +27,7 @@ public class BadRequestExceptionHandler extends ResponseEntityExceptionHandler
      @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
      @ExceptionHandler({Exception.class})
      public ResponseEntity<Object> AllExceptions(HttpServletRequest req, Exception exception) {
-         log.error(exception.getMessage());
+         log.error(exception.getLocalizedMessage());
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                  body(new ApiResponse(false,exception.getMessage()));
      }

@@ -10,4 +10,5 @@ public interface ProfileServiceFace {
     ProfileDto getUserProfile(UserPrincipal userPrincipal);
     ProfileDto saveUserProfile(ProfileDto profileDto,UserPrincipal userPrincipal);
     void saveProfileImage(MultipartFile image,String type,UserPrincipal userPrincipal) throws IOException;
+    byte[] getProfileImage(String img,String type) throws IOException;
 }
