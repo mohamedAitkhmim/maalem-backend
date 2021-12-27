@@ -9,9 +9,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class PhotoDto {
 
-    @NotBlank
-    private String id;
-
     @NotNull
     private MultipartFile image;
 
