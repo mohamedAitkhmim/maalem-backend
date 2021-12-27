@@ -29,9 +29,22 @@ public class Profile {
 
     private String cnie;
 
+    @Column(columnDefinition = "TEXT")
+    private String about;
+
     private String photo;
 
-    //@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    //private User user;
+    private String background;
+
+    private String facebook;
+
+    private String linkedin;
+
+    private String github;
+
+    private String ville;
+
+    @Column(columnDefinition = "TEXT")
+    private String adresse;
 
 }

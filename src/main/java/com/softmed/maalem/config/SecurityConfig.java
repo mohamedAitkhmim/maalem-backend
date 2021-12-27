@@ -76,8 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/**","/public/**").permitAll()
                 .antMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
-                .antMatchers("/client/**").hasAnyAuthority(Role.CLIENT.name())
-
+                .antMatchers("/client/**").hasAnyAuthority(Role.CLIENT.name(),Role.ADMIN.name())
                  .anyRequest().authenticated();
 
         // Add our custom Token based authentication filter
