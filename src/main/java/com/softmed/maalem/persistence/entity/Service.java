@@ -20,7 +20,7 @@ public class Service implements Serializable {
     private String description;
 
     @Embedded
-    private Coordonnee coordonnee;
+    private Coordonnee coordonnee = new Coordonnee();
 
     private String adresse;
 

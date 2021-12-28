@@ -4,8 +4,12 @@ import com.softmed.maalem.persistence.entity.Categorie;
 import com.softmed.maalem.presentation.dto.CategorieDto;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface CategorieMapper {
-    CategorieDto categorieToDto(Categorie categorie);
-    Categorie dtoTocategorie(CategorieDto dto);
+    CategorieDto mapToDto(Categorie categorie);
+    Categorie mapTocategorie(CategorieDto dto);
+
+    List<CategorieDto> mapToListDto(List<Categorie> categorieList);
 }
