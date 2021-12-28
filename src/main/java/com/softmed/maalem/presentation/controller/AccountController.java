@@ -39,14 +39,14 @@ public class AccountController {
 
     @PostMapping("/saveProfile")
     public ResponseEntity<ProfileDto> saveProfile(@Valid @RequestBody ProfileDto dto,@CurrentUser UserPrincipal userPrincipal) {
-        System.err.println(dto.toString());
         return ResponseEntity.status(HttpStatus.OK).body(profileService.saveUserProfile(dto,userPrincipal));
     }
 
     @PostMapping("/saveImage/{type}")
     public ResponseEntity<ApiResponse> saveImageProfile(@ModelAttribute MultipartFile image,@PathVariable String type,@CurrentUser UserPrincipal userPrincipal) throws IOException {
-        profileService.saveProfileImage(image,type,userPrincipal);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true,"image saved"));
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ApiResponse(true,profileService.saveProfileImage(image,type,userPrincipal))
+        );
     }
 
 

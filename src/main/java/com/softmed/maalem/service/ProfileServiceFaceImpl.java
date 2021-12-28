@@ -61,7 +61,7 @@ public class ProfileServiceFaceImpl implements ProfileServiceFace {
     }
 
     @Override
-    public void saveProfileImage(MultipartFile image, String type,UserPrincipal userPrincipal) throws IOException {
+    public String saveProfileImage(MultipartFile image, String type,UserPrincipal userPrincipal) throws IOException {
         User user = userRepository.findById(userPrincipal.getId()).orElseThrow(()->new BadRequestException("User introuvable"));
         if (image == null || image.isEmpty()) throw new RuntimeException("image null");
 
@@ -76,16 +76,19 @@ public class ProfileServiceFaceImpl implements ProfileServiceFace {
                     log.info("Image deleted successfully");
                 else
                     log.error("Failed to delete the image");
-                break;
+                return user.getProfile().getPhoto();
+                //break;
             }
             case "BACKGROUND":{
                 //delete old image
-                user.getProfile().setPhoto(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename()));
-                image.transferTo(Paths.get(profileImagesFolder+"/background/"+user.getProfile().getPhoto()));
+                user.getProfile().setBackground(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename()));
+                image.transferTo(Paths.get(profileImagesFolder+"/background/"+user.getProfile().getBackground()));
                 profileRepository.save(user.getProfile());
-                break;
+                return user.getProfile().getBackground();
+                //break;
             }
         }
+        return "";
     }
 
     @Override
