@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @EnableConfigurationProperties(AppProperties.class)
@@ -23,6 +24,8 @@ public class MaalemApplication implements CommandLineRunner {
 
     @Autowired
     RegistrationFace registrationFace;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -34,5 +37,6 @@ public class MaalemApplication implements CommandLineRunner {
         dto.setPrenom("MED");
         dto.setPhone("12345678");
         //registrationFace.register(dto);
+        //System.err.println(passwordEncoder.encode("123456"));
     }
 }

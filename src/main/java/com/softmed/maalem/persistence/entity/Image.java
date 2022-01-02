@@ -11,7 +11,7 @@ public class Image implements Serializable {
 
     private String nom;//UUID
 
-    private String extention;
+    //private String extention;
 
     @ManyToOne
     private Service service;
