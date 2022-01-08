@@ -11,12 +11,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestControllerAdvice
-@Slf4j
-public class BadRequestExceptionHandler extends ResponseEntityExceptionHandler
+//@RestControllerAdvice
+//@Slf4j
+public class BadRequestExceptionHandler //extends ResponseEntityExceptionHandler
  {
 
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+   /* @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<Object> badRequest(HttpServletRequest req, Exception exception) {
         log.error(exception.getLocalizedMessage());
@@ -31,5 +31,7 @@ public class BadRequestExceptionHandler extends ResponseEntityExceptionHandler
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                  body(new ApiResponse(false,exception.getMessage()));
      }
+
+    */
 
 }
