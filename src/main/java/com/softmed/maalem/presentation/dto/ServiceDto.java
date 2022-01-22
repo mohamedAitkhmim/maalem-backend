@@ -1,5 +1,7 @@
 package com.softmed.maalem.presentation.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.softmed.maalem.persistence.entity.Coordonnee;
 import lombok.Data;
 import lombok.ToString;
@@ -10,9 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data @ToString
+//@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceDto {
 
-    //@NotBlank
+    @NotBlank
     private String titre;
 
     private String description;
@@ -21,13 +25,13 @@ public class ServiceDto {
 
     private Long longitude;
 
-    //@NotBlank
+    @NotBlank
     private String adresse;
 
     private Long categorieId;
 
     private List<String> skills;
 
-    //private List<MultipartFile> images = new ArrayList<>();
+    private List<MultipartFile> images = new ArrayList<>();
 
 }

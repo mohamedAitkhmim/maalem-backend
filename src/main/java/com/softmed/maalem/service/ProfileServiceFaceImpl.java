@@ -67,20 +67,23 @@ public class ProfileServiceFaceImpl implements ProfileServiceFace {
 
         switch (type){
             case "PROFILE":{
-                String path = profileImagesFolder+"/profile/"+user.getProfile().getPhoto();
                 //delete old image
-                user.getProfile().setPhoto(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename()));
-                image.transferTo(Paths.get(profileImagesFolder+"/profile/"+user.getProfile().getPhoto()));
-                profileRepository.save(user.getProfile());
-                if(new File(path).delete())
+                if(new File(profileImagesFolder+"/profile/"+user.getProfile().getPhoto()).delete())
                     log.info("Image deleted successfully");
                 else
                     log.error("Failed to delete the image");
+                user.getProfile().setPhoto(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename()));
+                image.transferTo(Paths.get(profileImagesFolder+"/profile/"+user.getProfile().getPhoto()));
+                profileRepository.save(user.getProfile());
                 return user.getProfile().getPhoto();
                 //break;
             }
             case "BACKGROUND":{
                 //delete old image
+                if(new File(profileImagesFolder+"/background/"+user.getProfile().getBackground()).delete())
+                    log.info("Image deleted successfully");
+                else
+                    log.error("Failed to delete the image");
                 user.getProfile().setBackground(UUID.randomUUID().toString()+"."+FilenameUtils.getExtension(image.getOriginalFilename()));
                 image.transferTo(Paths.get(profileImagesFolder+"/background/"+user.getProfile().getBackground()));
                 profileRepository.save(user.getProfile());

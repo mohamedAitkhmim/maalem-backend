@@ -1,5 +1,6 @@
 package com.softmed.maalem.presentation.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softmed.maalem.presentation.dto.*;
 import com.softmed.maalem.security.CurrentUser;
 import com.softmed.maalem.security.UserPrincipal;
@@ -30,34 +31,23 @@ public class ServiceController {
     private CategorieFace categorieService;
 
     @PostMapping(value = "/save")
-    //@Timed
-    public ResponseEntity<String> saveService(@ModelAttribute ServiceDto dto) {
+    public ResponseEntity<ServiceDto> saveService(@ModelAttribute ServiceDto dto,@CurrentUser UserPrincipal userPrincipal) throws IOException {
         System.err.println(dto.toString());
-        /*if (dto.getImages().size() > 0)
+        if (dto.getImages().size() > 0)
             dto.getImages().forEach(file -> {
                 System.err.println(file.getOriginalFilename());
             });
-
-         */
-
-        return ResponseEntity.status(HttpStatus.OK).body("OK");
-        //return ResponseEntity.status(HttpStatus.OK).body(servicesService.saveService(dto,userPrincipal));
-    }
-
-    @PostMapping(value = "/save2",consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_OCTET_STREAM_VALUE })
-    public ResponseEntity<String> saveService2(@RequestPart("data") ServiceDto dto,@RequestPart("images") List<MultipartFile> images) {
-        System.err.println(dto.toString());
-        if (images.size() > 0)
-            images.forEach(file -> {
-                System.err.println(file.getOriginalFilename());
-            });
-
-        return ResponseEntity.status(HttpStatus.OK).body("OK");
-        //return ResponseEntity.status(HttpStatus.OK).body(servicesService.saveService(dto,userPrincipal));
+        //return ResponseEntity.status(HttpStatus.OK).body("OK");
+        return ResponseEntity.status(HttpStatus.OK).body(servicesService.saveService(dto,userPrincipal));
     }
 
     @GetMapping("/categories")
     public ResponseEntity<List<CategorieDto>> getCategories() {
         return ResponseEntity.status(HttpStatus.OK).body(categorieService.getAllCategories());
+    }
+
+    @GetMapping("/client/all")
+    public ResponseEntity<List<ServiceDto>> getServiceByClient(@CurrentUser UserPrincipal userPrincipal) {
+        return ResponseEntity.status(HttpStatus.OK).body(servicesService.getClientServices(userPrincipal));
     }
 }
