@@ -22,4 +22,10 @@ public class PublicController {
         //System.err.println(type);
         return profileService.getProfileImage(img,type);
     }
+
+    @GetMapping("/test")
+    public String getServerStatus(){
+        return "server: it's ok bro.";
+    }
+
 }
